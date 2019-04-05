@@ -20,9 +20,9 @@ public class IPLocationRequest: Request, Hashable, Equatable {
 	internal var failure: LocationRequest.Failure? = nil
 	
 	/// Hash value
-	public var hashValue: Int {
-		return self.id.hashValue
-	}
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 	
 	/// Timeout interval
 	public private(set) var timeout: TimeInterval?

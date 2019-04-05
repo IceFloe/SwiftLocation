@@ -27,8 +27,8 @@
 		648810021FA36B3600AC0639 /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 648810011FA36B3600AC0639 /* Shared.swift */; };
 		648810071FA36C9300AC0639 /* LocationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 648810061FA36C9300AC0639 /* LocationRequest.swift */; };
 		8933C7901EB5B82D000D00A4 /* SwiftLocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933C7891EB5B82A000D00A4 /* SwiftLocationTests.swift */; };
+		BB2BB42919C93FB490341521 /* Pods_SwiftLocation_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44B4B3F1C6B2BCE993A6133D /* Pods_SwiftLocation_iOS.framework */; };
 		C367940C3E116F990B8C9236 /* Pods_SwiftLocation_iOS_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D26D1F9F71D6010E362FA717 /* Pods_SwiftLocation_iOS_Tests.framework */; };
-		EFB8513D7818057CB4F37B3F /* Pods_SwiftLocation_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44B4B3F1C6B2BCE993A6133D /* Pods_SwiftLocation_iOS.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,7 +121,7 @@
 				6459B1321FA4D67700E0CD53 /* Contacts.framework in Frameworks */,
 				64880FF41FA369A900AC0639 /* MapKit.framework in Frameworks */,
 				64880FF21FA3698B00AC0639 /* CoreLocation.framework in Frameworks */,
-				EFB8513D7818057CB4F37B3F /* Pods_SwiftLocation_iOS.framework in Frameworks */,
+				BB2BB42919C93FB490341521 /* Pods_SwiftLocation_iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,7 +295,6 @@
 				52D6D9781BEFF229002C0205 /* Frameworks */,
 				52D6D9791BEFF229002C0205 /* Headers */,
 				52D6D97A1BEFF229002C0205 /* Resources */,
-				9E2F4121426A6420397A065F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -314,8 +313,6 @@
 				52D6D9821BEFF229002C0205 /* Sources */,
 				52D6D9831BEFF229002C0205 /* Frameworks */,
 				52D6D9841BEFF229002C0205 /* Resources */,
-				09AE88A357DD8915463F2562 /* [CP] Embed Pods Frameworks */,
-				8EB883E648E63FDBD7A54F67 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -336,8 +333,6 @@
 				64880FD11FA3685400AC0639 /* Frameworks */,
 				64880FD21FA3685400AC0639 /* Resources */,
 				64880FEA1FA3686E00AC0639 /* Copy Frameworks */,
-				56E995EA176C3E41A6DB4CD5 /* [CP] Embed Pods Frameworks */,
-				96A32EB0CEA97EA9E88EAF77 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -379,6 +374,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -422,42 +418,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		09AE88A357DD8915463F2562 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-SwiftLocation-iOS Tests/Pods-SwiftLocation-iOS Tests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SwiftLocation-iOS Tests/Pods-SwiftLocation-iOS Tests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		56E995EA176C3E41A6DB4CD5 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-TestApplication/Pods-TestApplication-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TestApplication/Pods-TestApplication-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		6507291D181B08127642A8E5 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -476,21 +436,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8EB883E648E63FDBD7A54F67 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SwiftLocation-iOS Tests/Pods-SwiftLocation-iOS Tests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		8F66A96B62FE4219276729A2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -507,36 +452,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		96A32EB0CEA97EA9E88EAF77 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TestApplication/Pods-TestApplication-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9E2F4121426A6420397A065F /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SwiftLocation-iOS/Pods-SwiftLocation-iOS-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E2B25B138939EAE47C04ED63 /* [CP] Check Pods Manifest.lock */ = {
@@ -748,14 +663,14 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Configs/SwiftLocation.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.SwiftLocation.SwiftLocation-iOS";
 				PRODUCT_NAME = SwiftLocation;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -773,13 +688,13 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Configs/SwiftLocation.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.SwiftLocation.SwiftLocation-iOS";
 				PRODUCT_NAME = SwiftLocation;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

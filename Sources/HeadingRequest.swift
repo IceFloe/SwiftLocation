@@ -78,10 +78,10 @@ public class HeadingRequest: Request, Equatable, Hashable {
 	public static func ==(lhs: HeadingRequest, rhs: HeadingRequest) -> Bool {
 		return lhs.id == rhs.id
 	}
-	
-	public var hashValue: Int {
-		return self.id.hashValue
-	}
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 	
 	/// Stop receiving updates for this heading request
 	public func stop() {

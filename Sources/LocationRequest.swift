@@ -155,8 +155,8 @@ public class LocationRequest: Request, Equatable, Hashable {
 	public static func ==(lhs: LocationRequest, rhs: LocationRequest) -> Bool {
 		return lhs.id == rhs.id
 	}
-	
-	public var hashValue: Int {
-		return self.id.hashValue
-	}
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }

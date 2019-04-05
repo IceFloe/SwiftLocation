@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftyJSON
 
 public typealias FindPlaceRequest_Success = (([PlaceMatch]) -> (Void))
 public typealias FindPlaceRequest_Failure = ((LocationError) -> (Void))
@@ -77,11 +76,17 @@ public class FindPlaceRequest_Google: FindPlaceRequest {
 		}
 		self.task?.onSuccess = { [weak self] json in
             guard let `self` = self else { return }
-			if json["status"].stringValue != "OK" {
+            guard let json = (try? JSONSerialization.jsonObject(with: json, options: [])) as? [String: Any],
+                let status = json["status"] as? String, status != "OK" else {
 				self.failure?(LocationError.other("Wrong google response"))
 				return
 			}
-			let places = PlaceMatch.load(list: json["predictions"].arrayValue)
+            guard let anyData = json["predictions"],
+                let data = try? JSONSerialization.data(withJSONObject: anyData, options: []),
+                let places = try? PlaceMatch.load(list: data) else {
+                self.failure?(LocationError.dataParserError)
+                return
+            }
 			self.success?(places)
 		}
 		self.task?.execute()
@@ -205,37 +210,52 @@ public enum FindPlaceRequest_Google_Language: String {
 }
 
 /// Identify a single match entry for a place search
-public class PlaceMatch {
+public class PlaceMatch: Decodable {
+
+    enum CodingKeys: String, CodingKey {
+        case placeID = "place_id"
+        case name = "description"
+        case text = "structured_formatting"
+        case types
+    }
+
+    struct PlaceMatchText: Decodable {
+        /// Main text of the place
+        let mainText: String
+        let secondaryText: String
+
+        enum CodingKeys: String, CodingKey {
+            case mainText = "main_text"
+            case secondaryText = "secondary_text"
+        }
+    }
+
+    private let text: PlaceMatchText
 	
 	/// Identifier of the place
-	public internal(set) var placeID: String
+	public let placeID: String
 	
 	/// Name of the place
-	public internal(set) var name: String
+	public let name: String
 	
 	/// Main text of the place
-	public internal(set) var mainText: String
+    public var mainText: String {
+        return text.mainText
+    }
 	
 	/// Secondary text of the place
-	public internal(set) var secondaryText: String
+    public var secondaryText: String {
+        return text.secondaryText
+    }
 	
 	/// Place types string (google)
 	public internal(set) var types: [String]
 	
 	/// Place detail cache
 	public private(set) var detail: Place?
-
-	public init?(_ json: JSON) {
-		guard let placeID = json["place_id"].string else { return nil }
-		self.placeID = placeID
-		self.name = json["description"].stringValue
-		self.mainText = json["structured_formatting"]["main_text"].stringValue
-		self.secondaryText = json["structured_formatting"]["secondary_text"].stringValue
-		self.types = json["types"].arrayValue.map { $0.stringValue }
-	}
 	
-	public static func load(list: [JSON]) -> [PlaceMatch] {
-		return list.compactMap { PlaceMatch($0) }
+    public static func load(list: Data) throws -> [PlaceMatch] {
+		return try JSONDecoder().decode([PlaceMatch].self, from: list)
 	}
 	
 	public func detail(timeout: TimeInterval? = nil,
@@ -253,7 +273,12 @@ public class PlaceMatch {
 		let task = JSONOperation(url, timeout: timeout ?? 10)
 		task.onSuccess = { [weak self] json in
             guard let `self` = self else { return }
-			self.detail = Place(googleJSON: json["result"])
+            guard let json = (try? JSONSerialization.jsonObject(with: json, options: [])) as? [String: Any],
+            let result = json["result"] as? [String: Any] else {
+                onFail?(LocationError.dataParserError)
+                return
+            }
+			self.detail = Place(googleJSON: result)
 			onSuccess(self.detail!)
 		}
 		task.onFailure = { err in

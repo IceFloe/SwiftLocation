@@ -10,7 +10,6 @@ import Foundation
 import CoreLocation
 import MapKit
 import Contacts
-import SwiftyJSON
 
 //MARK: Geocoder Google
 
@@ -49,7 +48,12 @@ public final class Geocoder_Google: GeocoderRequest {
 		}
 		self.task?.onSuccess = { [weak self] json in
             guard let `self` = self else { return }
-			let places = json["results"].arrayValue.map { Place(googleJSON: $0) }
+            guard let json = (try? JSONSerialization.jsonObject(with: json, options: [])) as? [String: Any],
+                let results = json["results"] as? [[String: Any]] else {
+                    self.failure?(LocationError.dataParserError)
+                    return
+            }
+			let places = results.map { Place(googleJSON: $0) }
 			self.success?(places)
 			self.isFinished = true
 		}
@@ -70,7 +74,12 @@ public final class Geocoder_Google: GeocoderRequest {
 		}
 		self.task?.onSuccess = { [weak self] json in
             guard let `self` = self else { return }
-			let places = json["results"].arrayValue.map { Place(googleJSON: $0) }
+            guard let json = (try? JSONSerialization.jsonObject(with: json, options: [])) as? [String: Any],
+                let results = json["results"] as? [[String: Any]] else {
+                    self.failure?(LocationError.dataParserError)
+                    return
+            }
+			let places = results.map { Place(googleJSON: $0) }
 			self.success?(places)
 			self.isFinished = true
 		}
@@ -112,7 +121,11 @@ public final class Geocoder_OpenStreet: GeocoderRequest {
 		}
 		self.task?.onSuccess = { [weak self] json in
             guard let `self` = self else { return }
-			self.success?([self.parseResultPlace(json)])
+            guard let json = (try? JSONSerialization.jsonObject(with: json, options: [])) as? [String: Any] else {
+                self.failure?(LocationError.dataParserError)
+                return
+            }
+			self.success?([Place(openStreetMapJSON: json)])
 			self.isFinished = true
 		}
 		self.task?.execute()
@@ -129,30 +142,16 @@ public final class Geocoder_OpenStreet: GeocoderRequest {
 		}
 		self.task?.onSuccess = { [weak self] json in
             guard let `self` = self else { return }
-			let places = json.arrayValue.map { self.parseResultPlace($0) }
+            guard let json = (try? JSONSerialization.jsonObject(with: json, options: [])) as? [[String: Any]] else {
+                self.failure?(LocationError.dataParserError)
+                return
+            }
+			let places = json.map { Place(openStreetMapJSON: $0)}
 			self.success?(places)
 			self.isFinished = true
 		}
 		self.task?.execute()
 	}
-	
-	private func parseResultPlace(_ json: JSON) -> Place {
-		let place = Place()
-		place.coordinates = CLLocationCoordinate2DMake(json["lat"].doubleValue, json["lon"].doubleValue)
-		place.countryCode = json["address"]["country_code"].string
-		place.country = json["address"]["country"].string
-		place.administrativeArea = json["address"]["state"].string
-		place.subAdministrativeArea = json["address"]["county"].string
-		place.postalCode = json["address"]["postcode"].string
-		place.city = json["address"]["city"].string
-		place.locality = json["address"]["city_district"].string
-		place.thoroughfare = json["address"]["road"].string
-		place.subThoroughfare = json["address"]["house_number"].string
-		place.name = json["display_name"].string
-		place.rawDictionary = json.dictionaryObject
-		return place
-	}
-
 }
 
 //MARK: Geocoder Apple

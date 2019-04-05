@@ -33,7 +33,6 @@
 import Foundation
 import CoreLocation
 import MapKit
-import SwiftyJSON
 
 /// Thread-safe list
 /// All functions and proprierties are thread-safe.
@@ -64,7 +63,7 @@ internal class SafeList<Value: Equatable> {
 	@discardableResult
 	public func remove(_ item: Value) -> Bool {
 		return self.dispatchQueue.sync {
-			guard let idx = self._list.index(of: item) else { return false }
+            guard let idx = self._list.firstIndex(of: item) else { return false }
 			self._list.remove(at: idx)
 			return true
 		}
@@ -76,7 +75,7 @@ internal class SafeList<Value: Equatable> {
 	/// - Returns: valid `Int` if item is in the list, `nil` if does not exists.
 	public func index(of item: Value) -> Int? {
 		return self.dispatchQueue.sync {
-			guard let idx = self._list.index(of: item) else { return nil }
+            guard let idx = self._list.firstIndex(of: item) else { return nil }
 			return idx
 		}
 	}
@@ -309,12 +308,12 @@ public class TimeoutManager {
 public extension CLLocationManager {
 	
 	/// Returns the current state of heading services for this device.
-	public var headingState: HeadingServiceState {
+	var headingState: HeadingServiceState {
 		return (CLLocationManager.headingAvailable() ? .available : .unavailable)
 	}
 	
 	/// Return `true` if host application has background location capabilities enabled
-	public static var hasBackgroundCapabilities: Bool {
+	static var hasBackgroundCapabilities: Bool {
 		guard let capabilities = Bundle.main.infoDictionary?["UIBackgroundModes"] as? [String] else {
 			return false
 		}
@@ -323,7 +322,7 @@ public extension CLLocationManager {
 	
 	/// Return the highest authorization level based upon the value added info applications'
 	/// Info.plist file.
-	public static var authorizationLevelFromInfoPlist: AuthorizationLevel {
+	static var authorizationLevelFromInfoPlist: AuthorizationLevel {
 		let osVersion = (UIDevice.current.systemVersion as NSString).floatValue
 
 		if osVersion < 11 {
@@ -360,7 +359,7 @@ public extension CLLocationManager {
 	///
 	/// - Parameter level: level you want to set
 	/// - Returns: `true` if valid
-	public static func validateInfoPlistRequiredKeys(forLevel level: AuthorizationLevel) -> Bool {
+	static func validateInfoPlistRequiredKeys(forLevel level: AuthorizationLevel) -> Bool {
 		let osVersion = (UIDevice.current.systemVersion as NSString).floatValue
 		switch level {
 		case .always:
@@ -380,7 +379,7 @@ public extension CLLocationManager {
 	/// Validate and request authorization level
 	///
 	/// - Parameter level: level to require
-	public func requestAuthorization(level: AuthorizationLevel) {
+	func requestAuthorization(level: AuthorizationLevel) {
 		// Validate the level you want to set before doing a request
 		if CLLocationManager.validateInfoPlistRequiredKeys(forLevel: level) == false {
 			fatalError("Missing Info.plist entries for required authorization level")
@@ -403,7 +402,7 @@ public extension CLLocationManager {
 	}
 	
 	/// Current state of the authorization service
-	public var serviceState: ServiceState {
+	var serviceState: ServiceState {
 		guard CLLocationManager.locationServicesEnabled() else {
 			return .disabled
 		}
@@ -420,7 +419,7 @@ public extension CLLocationManager {
 	}
 	
 	/// Are services available
-	public var servicesAreAvailable: Bool {
+	var servicesAreAvailable: Bool {
 		switch self.serviceState {
 		case .disabled, .denied, .restricted:
 			return false
@@ -671,7 +670,7 @@ public class JSONOperation {
 	private var task: URLSessionDataTask?
 	
 	/// Callback called on success
-	public var onSuccess: ((JSON) -> (Void))? = nil
+	public var onSuccess: ((Data) -> (Void))? = nil
 	
 	/// Callack called on failure
 	public var onFailure: ((LocationError) -> (Void))? = nil
@@ -703,12 +702,7 @@ public class JSONOperation {
 			self.onFailure?(LocationError.dataParserError)
 			return
 		}
-		do {
-			let json = try JSON(data: d)
-			self.onSuccess?(json)
-		} catch {
-			self.onFailure?(LocationError.dataParserError)
-		}
+        self.onSuccess?(d)
 	}
 	
 	/// Execute download and parse
@@ -744,7 +738,7 @@ public class Place: CustomStringConvertible {
 	public internal(set) var country: String?
 	
 	
-	@available(*, deprecated: 3.2.1, message: "Use administrativeArea property instead")
+    @available(*, deprecated, message: "Use administrativeArea property instead")
 	public var state: String? {
 		return self.administrativeArea
 	}
@@ -755,7 +749,7 @@ public class Place: CustomStringConvertible {
 	/// the value for this property would be the string “CA” or “California”.
 	public internal(set) var administrativeArea: String?
 	
-	@available(*, deprecated: 3.2.1, message: "Use subAdministrativeArea property instead")
+    @available(*, deprecated, message: "Use subAdministrativeArea property instead")
 	public var county: String? {
 		return self.subAdministrativeArea
 	}
@@ -767,7 +761,7 @@ public class Place: CustomStringConvertible {
 	/// which is the county in California that contains the city of Cupertino.
 	public internal(set) var subAdministrativeArea: String?
 
-	@available(*, deprecated: 3.2.1, message: "Use locality property instead")
+    @available(*, deprecated, message: "Use locality property instead")
 	public var neighborhood: String? {
 		return self.locality
 	}
@@ -781,7 +775,7 @@ public class Place: CustomStringConvertible {
 	/// that is associated with the location.
 	public internal(set) var subLocality: String?
 	
-	@available(*, deprecated: 3.2.1, message: "Use postalCode property instead")
+    @available(*, deprecated, message: "Use postalCode property instead")
 	public var postcode: String? {
 		return self.postalCode
 	}
@@ -792,12 +786,12 @@ public class Place: CustomStringConvertible {
 	/// City
 	public internal(set) var city: String?
 	
-	@available(*, deprecated: 3.2.1, message: "Use subAdministrativeArea property instead")
+    @available(*, deprecated, message: "Use subAdministrativeArea property instead")
 	public var cityDistrict: String? {
 		return self.subAdministrativeArea
 	}
 	
-	@available(*, deprecated: 3.2.1, message: "Use thoroughfare property instead")
+    @available(*, deprecated, message: "Use thoroughfare property instead")
 	public var road: String? {
 		return self.thoroughfare
 	}
@@ -807,7 +801,7 @@ public class Place: CustomStringConvertible {
 	/// the value for this property would be the string “Infinite Loop”.
 	public internal(set) var thoroughfare: String?
 
-	@available(*, deprecated: 3.2.1, message: "Use subThoroughfare property instead")
+    @available(*, deprecated, message: "Use subThoroughfare property instead")
 	public var houseNumber: String? {
 		return self.subThoroughfare
 	}
@@ -834,41 +828,71 @@ public class Place: CustomStringConvertible {
 	/// Initialize with Google raw service data
 	///
 	/// - Parameter json: input json
-	internal init(googleJSON json: JSON) {
-		func ab(forType type: String) -> JSON? {
-			return json["address_components"].arrayValue.first(where: { data in
-				return data["types"].arrayValue.contains(where: { entry in
-					return entry.stringValue == type
-				})
-			})
+	internal init(googleJSON json: [String: Any]) {
+		func ab(forType type: String) -> [String: Any]? {
+            guard let components = json["address_components"] as? [[String: Any]] else {
+                return nil
+            }
+            for component in components {
+                if let types = component["types"] as? [String] {
+                    for componentType in types where componentType == type {
+                        return component
+                    }
+                }
+            }
+
+            return nil
 		}
-		
-		if let lat = json["geometry"]["location"]["lat"].double, let lon = json["geometry"]["location"]["lng"].double {
-			self.coordinates = CLLocationCoordinate2DMake(lat, lon)
-		}
-		self.name = ab(forType: "establishment")?["long_name"].string
+
+        if let geometry = json["geometry"] as? [String: Any],
+            let location = geometry["location"] as? [String: Any],
+            let lat = location["lat"] as? Double, let lon = location["lng"] as? Double {
+            self.coordinates = CLLocationCoordinate2DMake(lat, lon)
+        }
+
+		self.name = ab(forType: "establishment")?["long_name"] as? String
 		if let countryData = ab(forType: "country") {
-			self.countryCode = countryData["short_name"].string
-			self.country = countryData["long_name"].string
+			self.countryCode = countryData["short_name"] as? String
+			self.country = countryData["long_name"] as? String
 		}
-		self.postalCode = ab(forType: "postal_code")?["long_name"].string
-		self.administrativeArea = ab(forType: "administrative_area_level_1")?["long_name"].string
-		self.subAdministrativeArea = ab(forType: "administrative_area_level_2")?["long_name"].string
-		self.city = ab(forType: "locality")?["long_name"].string
-		self.formattedAddress = json["formatted_address"].string
+		self.postalCode = ab(forType: "postal_code")?["long_name"] as? String
+		self.administrativeArea = ab(forType: "administrative_area_level_1")?["long_name"] as? String
+		self.subAdministrativeArea = ab(forType: "administrative_area_level_2")?["long_name"] as? String
+		self.city = ab(forType: "locality")?["long_name"] as? String
+		self.formattedAddress = json["formatted_address"] as? String
 		
-		self.locality = ab(forType: "neighborhood")?["long_name"].string ?? ab(forType: "sublocality_level_1")?["long_name"].string
-		self.subLocality = ab(forType: "sublocality_level_2")?["long_name"].string
-		self.thoroughfare = ab(forType: "route")?["long_name"].string
+		self.locality = ab(forType: "neighborhood")?["long_name"] as? String ?? ab(forType: "sublocality_level_1")?["long_name"] as? String
+		self.subLocality = ab(forType: "sublocality_level_2")?["long_name"] as? String
+		self.thoroughfare = ab(forType: "route")?["long_name"] as? String
 		if self.thoroughfare == nil {
-			self.thoroughfare = ab(forType: "neighborhood")?["short_name"].string
+			self.thoroughfare = ab(forType: "neighborhood")?["short_name"] as? String
 		}
-		self.subThoroughfare = ab(forType: "street_number")?["long_name"].string
+		self.subThoroughfare = ab(forType: "street_number")?["long_name"] as? String
 		
-		self.POI = ab(forType: "point_of_interest")?["long_name"].string
-		self.rawDictionary = json.dictionaryObject
+		self.POI = ab(forType: "point_of_interest")?["long_name"] as? String
+		self.rawDictionary = json
 	}
-	
+
+    internal init(openStreetMapJSON json: [String: Any]) {
+        if let lat = json["lat"] as? Double, let lon = json["lon"] as? Double {
+            coordinates = CLLocationCoordinate2DMake(lat, lon)
+        }
+        name = json["display_name"] as? String
+        rawDictionary = json
+
+        guard let address = json["address"] as? [String: Any] else {
+            return
+        }
+        countryCode = address["country_code"] as? String
+        country = address["country"] as? String
+        administrativeArea = address["state"] as? String
+        subAdministrativeArea = address["county"] as? String
+        postalCode = address["postcode"] as? String
+        city = address["city"] as? String
+        locality = address["city_district"] as? String
+        thoroughfare = address["road"] as? String
+        subThoroughfare = address["house_number"] as? String
+    }
 	
 	/// Initialize from Apple's raw service data
 	///
@@ -879,7 +903,6 @@ public class Place: CustomStringConvertible {
 		
 		self.name = p.name
 		self.coordinates = p.location?.coordinate
-		self.rawDictionary = p.addressDictionary as? [String: Any]
 
 		self.countryCode = p.isoCountryCode
 		self.country = p.country
